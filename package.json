@@ -1,0 +1,19 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@vuepic/vue-datepicker": "^9.0.1",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "nuxt": "^3.12.4",
+    "vue": "latest"
+  }
+}
