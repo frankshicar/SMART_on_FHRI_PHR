@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="body" >
     <h1>{{ title }}</h1>
     <nuxt-link to="/appointment_make" class="button">{{ makeAppointment }}</nuxt-link>
     <nuxt-link to="/appointment_view" class="button">{{ viewAppointment }}</nuxt-link>
@@ -32,11 +32,21 @@ export default {
       activeTab,
       setActive
     };
-  }
+  },
+
 }
+
 </script>
 
 <style>
+/* html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #5d4646;
+  color: #2C3E50;
+  font-family: Arial, sans-serif;
+} */
 h1 {
   margin-top: 20px;
 }
@@ -58,8 +68,8 @@ h1 {
 .button:hover {
   background-color: #2980B9;
 }
-body {
-    background-color: #FFFFFF;
+.body {
+    background-color: #ffffff;
     color: #2C3E50;
     font-family: Arial, sans-serif;
     margin: 0;

@@ -22,7 +22,7 @@ import { ref } from 'vue';
 export default {
   setup() {
     const title = ref('預約取藥');
-    const activeTab = ref('prescription');
+    const activeTab = ref('appointment');
     const fields = ref([
       { id: 'prescription', label: '處方', value: '', options: ['選項1', '選項2', '選項3'] },
       { id: 'date', label: '日期', value: '', options: ['2024-07-22', '2024-07-23', '2024-07-24'] },
