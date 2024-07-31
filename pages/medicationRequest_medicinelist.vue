@@ -43,7 +43,7 @@ export default {
 
     const fetchMedicationRequests = async () => {
       try {
-        const response = await fetch('/api/medicationRequest');
+        const response = await fetch('/api/medicationRequest_medicine');
         if (!response.ok) {
           throw new Error('Error fetching MedicationRequests');
         }

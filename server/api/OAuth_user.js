@@ -1,7 +1,3 @@
-import { defineEventHandler } from 'h3';
-import jwt from 'jsonwebtoken';
-import { useCookie } from 'nuxt/app';
-
 export default defineEventHandler(async (event) => {
   // const cookies = parseCookies(event);
   // const token = cookies.token;

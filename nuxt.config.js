@@ -21,7 +21,7 @@ export default {
     middleware: ['auth']
   },
   serverMiddleware: [
-    { path: '/api', handler: '~/server/api/MedicationRequest.js' } ,// 這裡配置了 /api 路徑對應到 Express 伺服器
+    { path: '/api/MedicationRequest_medicine', handler: '~/server/api/MedicationRequest_medicine.js' } ,// 這裡配置了 /api 路徑對應到 Express 伺服器
     { path: '/api', handler: '~/server/api/OAuth_login.js' }
 
   ]
