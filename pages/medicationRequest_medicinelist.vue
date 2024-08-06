@@ -20,7 +20,7 @@
     <div class="tab-bar">
       <nuxt-link to="/appointment_home" :class="{ active: activeTab === 'appointment' }" @click.native="setActive('appointment')">預約取藥</nuxt-link>
       <nuxt-link to="/medicationRequest_medicinelist" :class="{ active: activeTab === 'prescription' }" @click.native="setActive('prescription')">處方</nuxt-link>
-      <nuxt-link to="/medicationRequest_view" :class="{ active: activeTab === 'medicationRequest' }" @click="setActive('medicationRequest')">個人資訊</nuxt-link>
+      <!-- <nuxt-link to="/medicationRequest_view" :class="{ active: activeTab === 'medicationRequest' }" @click="setActive('medicationRequest')">個人資訊</nuxt-link> -->
     </div>
   </div>
 </template>

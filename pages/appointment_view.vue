@@ -2,24 +2,28 @@
   <div id="app">
     <h1>{{ title }}</h1>
     <div class="form-container">
-      <label for="medicationRequest">查看預約：</label>
-      <select v-model="selective" id="medicationRequest">
-        <option v-for="request in medicationRequest" :key="request" :value="request">{{ request }}</option>
-      </select>
       <label for="datePicker">選擇日期：</label>
-      <date-picker v-model="selectedDate"></date-picker>
+      <date-picker v-model="selectedDate" @update:modelValue="fetchAppointments"></date-picker>
     </div>
-    <button class="custom-button" @click="fetchAppointments">確定</button>
+    <div class="appointments-container">
+      <ul class="appointments-list">
+        <li v-for="appointment in appointments" :key="appointment.PatientID" class="appointment-item">
+          <div class="appointment-details">
+            <div class="appointment-date">{{ appointment.AppointmentDate }}</div>
+            <div class="appointment-info">{{ appointment.location }} - {{ appointment.Prescription }}</div>
+          </div>
+        </li>
+      </ul>
+    </div>
     <div class="tab-bar">
       <nuxt-link to="/appointment_home" :class="{ active: activeTab === 'appointment' }" @click.native="setActive('appointment')">預約取藥</nuxt-link>
       <nuxt-link to="/medicationRequest_medicinelist" :class="{ active: activeTab === 'prescription' }" @click.native="setActive('prescription')">處方</nuxt-link>
-      <nuxt-link to="/medicationRequest_view" :class="{ active: activeTab === 'medicationRequest' }" @click="setActive('medicationRequest')" >個人資訊</nuxt-link>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
@@ -29,31 +33,70 @@ export default {
   },
   setup() {
     const title = ref('查看預約');
-    const selective = ref('');
-    const medicationRequest = ref(['001', '002', '003']);
-    const selectedDate = ref(null);
+    const selectedDate = ref(new Date());
     const activeTab = ref('appointment');
+    const appointments = ref([]);
 
     const setActive = (tab) => {
       activeTab.value = tab;
     };
 
-    const fetchAppointments = () => {
-      console.log('Fetching appointments for date:', selectedDate.value, 'and request:', selective.value);
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const fetchAppointments = async () => {
+      try {
+        const formattedDate = formatDate(selectedDate.value);
+        const response = await fetch('/api/PatientAppointment_view', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            date: formattedDate,
+          }),
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          appointments.value = data.map(appointment => ({
+            ...appointment,
+            AppointmentDate: new Date(appointment.AppointmentDate).toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          }));
+        } else {
+          console.error('Error fetching appointments:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
     };
+
+    onMounted(() => {
+      fetchAppointments();
+    });
 
     return {
       title,
-      selective,
-      medicationRequest,
       selectedDate,
       activeTab,
       setActive,
       fetchAppointments,
+      appointments
     };
   },
 };
 </script>
+
 
 <style>
 body {
@@ -63,51 +106,81 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  line-height: 1.6;
+}
+#app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 h1 {
-  margin-top: 20px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .form-container {
-  display: grid;
-  grid-template-columns: auto;
-  font-size: 20px;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  width: 80%;
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top: 50px
+  margin-bottom: 20px;
 }
 
 .form-container label {
-  justify-self: start;
-  white-space: nowrap;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-.form-container select,
+/* .form-container select,
 .form-container .dp__main {
   flex: 1;
   min-width: 0;
   padding: 8px;
   font-size: 14px;
   line-height: 1.2;
-}
+} */
 
 .custom-button {
-  display: block;
-  width: 80%;
-  padding: 15px;
-  margin: 30px auto;
-  font-size: 20px;
-  text-align: center;
-  background-color: #d3d3d3;
-  color: #000000;
+  background-color: #3498db;
+  color: white;
   border: none;
-  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+
+.custom-button:hover {
+  background-color: #2980b9;
+}
+
+.appointments-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.appointment-item {
+  background-color: rgb(232, 213, 242);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appointment-date {
+  font-weight: bold;
+}
+
+.appointment-info {
+  color: #555;
 }
 
 .tab-bar {
@@ -134,4 +207,5 @@ h1 {
   color: #3498db;
   font-weight: bold;
 }
+
 </style>

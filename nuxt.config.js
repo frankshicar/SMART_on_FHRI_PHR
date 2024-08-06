@@ -9,6 +9,9 @@ export default {
       { hid: 'description', name: 'description', content: '' }
     ],
   },
+  routeRules: {
+    '/': { redirect: '/login' }
+  },
   publicRuntimeConfig: {
     HOST: process.env.HOST || 'http://localhost:3000'
   },
@@ -17,12 +20,18 @@ export default {
   ],
   build: {},
   router: {
-    middleware: 'redirect',
-    middleware: ['auth']
+    middleware: ['redirect', 'auth']
   },
+  
   serverMiddleware: [
     { path: '/api/MedicationRequest_medicine', handler: '~/server/api/MedicationRequest_medicine.js' } ,// 這裡配置了 /api 路徑對應到 Express 伺服器
-    { path: '/api', handler: '~/server/api/OAuth_login.js' }
+    { path: '/api', handler: '~/server/api/OAuth_login.js' },
+    { path: '/api/PatientAppointment_save', handler: '~/server/api/PatientAppointment_save.js' }
 
-  ]
+  ],
+  nitro: {
+    routeRules: {
+      '/api/**': { cors: true, headers: { 'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE' } }
+    }
+  }
 }

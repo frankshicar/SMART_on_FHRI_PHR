@@ -30,10 +30,10 @@ export default defineEventHandler(async (event) => {
 
 
     setCookie(event, 'token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      // maxAge: 60 * 60 * 24 * 7, // 7 days
+      // httpOnly: true,
       path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
     });
 
     return sendRedirect(event, '/appointment_home');

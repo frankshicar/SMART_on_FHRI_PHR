@@ -2,7 +2,7 @@
   <div id="app">
     <h1>{{ title }}</h1>
     <div class="form-container">
-      <label for="medicationRequest">查看預約：</label>
+      <label for="medicationRequest">查看處方：</label>
       <select v-model="selective" id="medicationRequest">
         <option v-for="request in medicationRequest" :key="request" :value="request">{{ request }}</option>
       </select>
@@ -28,11 +28,11 @@ export default {
     'date-picker': VueDatePicker,
   },
   setup() {
-    const title = ref('查看預約');
+    const title = ref('查看處方');
     const selective = ref('');
     const medicationRequest = ref(['001', '002', '003']);
     const selectedDate = ref(null);
-    const activeTab = ref('appointment');
+    const activeTab = ref('medicationRequest');
 
     const setActive = (tab) => {
       activeTab.value = tab;

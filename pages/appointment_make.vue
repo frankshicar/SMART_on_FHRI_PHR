@@ -2,7 +2,7 @@
   <div id="app">
     <h1>{{ title }}</h1>
     <div class="form-container">
-      <label for="medicationRequest">查看預約：</label>
+      <label for="medicationRequest">預約取藥：</label>
       <select v-model="selective" id="medicationRequest">
         <option v-for="request in medicationRequest" :key="request" :value="request">{{ request }}</option>
       </select>
@@ -19,13 +19,13 @@
     <div class="tab-bar">
       <nuxt-link to="/appointment_home" :class="{ active: activeTab === 'appointment' }" @click.native="setActive('appointment')">預約取藥</nuxt-link>
       <nuxt-link to="/medicationRequest_medicinelist" :class="{ active: activeTab === 'prescription' }" @click.native="setActive('prescription')">處方</nuxt-link>
-      <nuxt-link to="/medicationRequest_view" :class="{ active: activeTab === 'medicationRequest' }" @click="setActive('medicationRequest')">個人資訊</nuxt-link>
+      <!-- <nuxt-link to="/medicationRequest_view" :class="{ active: activeTab === 'medicationRequest' }" @click="setActive('medicationRequest')">個人資訊</nuxt-link> -->
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
@@ -34,20 +34,47 @@ export default {
     'date-picker': VueDatePicker,
   },
   setup() {
-    const title = ref('查看預約');
+    const title = ref('預約取藥');
     const selective = ref('');
     const selectedDate = ref(null);
     const selectedLocation = ref('');
     const medicationRequest = ref(['001', '002', '003']);
     const locations = ref(['Location A', 'Location B', 'Location C']);
     const activeTab = ref('appointment');
+    const patientID = ref('');
 
     const setActive = (tab) => {
       activeTab.value = tab;
     };
 
-    const fetchAppointments = () => {
-      console.log('Fetching appointments for date:', selectedDate.value, 'request:', selective.value, 'location:', selectedLocation.value);
+    const fetchAppointments = async () => {
+      if (!selective.value || !selectedDate.value || !selectedLocation.value) {
+        alert('請填寫所有必要信息');
+        return;
+      }
+      console.log("TEST!!!!",selectedDate.value)
+      try {
+        const response = await fetch('/api/PatientAppointment_save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prescription: selective.value,
+            appointmentDate: selectedDate.value,
+            location: selectedLocation.value,
+          }),
+        });
+
+        if (response.ok) {
+          alert('預約成功保存');
+        } else {
+          alert('保存預約時出錯');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('發生錯誤，請稍後再試');
+      }
     };
 
     return {
